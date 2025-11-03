@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useMemo, memo, useCallback } from 'react';
 
 const WORLD_WIDTH = 4000;
-const WORLD_HEIGHT = 4000;
+const WORLD_HEIGHT = 4300;
 
 // Type definitions
 type Path = {
@@ -111,6 +111,7 @@ function generateBorderTrees(): { x: number; y: number }[] {
   const TREE_SPACING = 250;         // moderate density
   const BORDER_DEPTH = 800;         // how far the forest extends offscreen
   const RANDOM_OFFSET = 200;        // randomness to break up the grid
+  const BOTTOM_RAISE = 200;         // raise bottom trees up by this many pixels
   // Fixed seed for border trees to ensure consistency
   const borderSeed = 12345;
 
@@ -137,7 +138,7 @@ function generateBorderTrees(): { x: number; y: number }[] {
       const seed2 = borderSeed + treeCounter * 19 + 5000;
       borderTrees.push({
         x: Math.round((x + rand(RANDOM_OFFSET, seed1)) * 100) / 100,
-        y: Math.round((WORLD_HEIGHT + layer + rand(RANDOM_OFFSET / 2, seed2)) * 100) / 100,
+        y: Math.round((WORLD_HEIGHT + layer - BOTTOM_RAISE + rand(RANDOM_OFFSET / 2, seed2)) * 100) / 100,
       });
       treeCounter++;
     }
@@ -396,9 +397,14 @@ export default function Home() {
   const [allTrees, setAllTrees] = useState<{ x: number; y: number }[]>([]);
   
   const initialTreeBlocks: TreeBlock[] = [
-    { length: 400, width: 2400, density: 0.5, top: 900, left: 200},
+    { length: 400, width: 400, density: 0.5, top: 900, left: 200},
+    { length: 400, width: 1800, density: 0.5, top: 900, left: 800},
     { length: 400, width: 600, density: 0.5, top: 900, left: 2700},
     { length: 400, width: 3000, density: 0.5, top: 2200, left: 800},
+    { length: 800, width: 1500, density: 0.5, top: 3300, left: 200},
+    { length: 400, width: 500, density: 0.5, top: 3300, left: 1700},
+    { length: 800, width: 800, density: 0.5, top: 3300, left: 2900},
+    { length: 400, width: 800, density: 0.5, top: 3300, left: 2600},
   ];
 
   const initialPaths: Path[] = [
@@ -410,6 +416,14 @@ export default function Home() {
     { length: 1100, width: 50, top: 900, left: 2800, angle: 90},
     { length: 800, width: 50, top: 1600, left: 3870, angle: 150},
     { length: 2300, width: 50, top: 2000, left: 950, angle: 0},
+    { length: 600, width: 50, top: 2000, left: 950, angle: 120},
+    { length: 350, width: 50, top: 1300, left: 800, angle: 90},
+    { length: 450, width: 50, top: 2000, left: 950, angle: 240},
+    { length: 500, width: 50, top: 2520, left: 640, angle: 90},
+    { length: 400, width: 50, top: 3020, left: 640, angle: 20},
+    { length: 3000, width: 50, top: 3180, left: 1000, angle: 0},
+    { length: 600, width: 50, top: 3580, left: 2700, angle: 90},
+
   ]
 
   const initialTextBoxes: TextBox[] = [
@@ -422,19 +436,17 @@ export default function Home() {
     { text: 'Already have an\n angent? Take a \nshortcut this way! ↓', fontSize: 18, top: 950, left: 2950},
     { text: 'Find an Agent by\n clicking here!', fontSize: 18, top: 1450, left: 3500, additionalInfo: 'all the info about finding an agent'},
     { text: 'Now that our agent\n has our draft, they will\n help us move it forwards!\n Click to move your\n book forwards!', fontSize: 18, top: 1700, left: 2950, additionalInfo: 'Info info info'},
-    { text: 'Nice, the book was\n liked by an editor!\n The publishing house said\n they will move forwards\n with it! Click and try\n editing like an editor!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'They found an\n illustrator for the book!\n Grab a piece of paper\n and draw a picture\n of your idea from above.', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'Your idea has been\n made into a real book!\n Click and to help the publishing house, \nread the section and answer\n a question.', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'The book need someone\n to promote it!\n Click to help with reviews!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'Edelweiss', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'Ingram', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'The book store is\n excited about your book\n and is ordering it!\n Click to write about\n the last time you were\n at a book store.', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'Libraries want everyone\n access your book!. A favorite\n is story time.\n Click and practice\n reading aloud!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'The book has made it\n to readers homes!\n Congrats your work\n is done!!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'You found the secret\n path: Awards!!\n Learn more about what \nyour book might win!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
-
-
-
+    { text: 'Nice, the book was\n liked by an editor!\n The publishing house said\n they will move forwards\n with it! Click and try\n editing like an editor!', fontSize: 18, top: 1700, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'They found an\n illustrator for the book!\n Type a cool emoji\n for illustrations!', fontSize: 18, top: 2100, left: 1100, additionalInfo: 'Info info info'},
+    { text: 'Sometimes the illustrators\n communicate with the author\n so we have a path for them\n to talk with them if they\n need it! ↑', fontSize: 18, top: 1900, left: 500},
+    { text: 'Your idea has been\n made into a real book!\n Click and to help the publishing house, \nread the section and answer\n a question.', fontSize: 18, top: 3200, left: 450, additionalInfo: 'Info info info'},
+    { text: 'Edelweiss', fontSize: 18, top: 3300, left: 1300, additionalInfo: 'Info info info'},
+    { text: 'Ingram', fontSize: 18, top: 3000, left: 1300, additionalInfo: 'Info info info'},
+    { text: 'The book need someone\n to promote it!\n Click to help with reviews!', fontSize: 18, top: 3000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'The book store is\n excited about your book\n and is ordering it!\n Click to write about\n the last time you were\n at a book store.', fontSize: 18, top: 3300, left: 2600, additionalInfo: 'Info info info'},
+    { text: 'Libraries want everyone\n access your book! A favorite\n is story time. Click and practice\n reading aloud!', fontSize: 18, top: 2950, left: 2800, additionalInfo: 'Info info info'},
+    { text: 'The book has made it\n to readers homes!\n Congrats your work\n is done!!', fontSize: 18, top: 3500, left: 3300},
+    { text: 'You found the secret\n path: Awards!!\n Learn more about what \nyour book might win!', fontSize: 18, top: 4100, left: 2300, additionalInfo: 'Info info info'},
   ];
   
   const [paths, setPaths] = useState<Path[]>(initialPaths);
@@ -639,6 +651,28 @@ export default function Home() {
             onClick={textBox.additionalInfo ? () => setClickedTextBox({ index, info: textBox.additionalInfo || '' }) : undefined}
           />
         ))}
+        
+        {/* Completion button */}
+        <button
+          className="absolute z-20"
+          style={{
+            left: `3800px`,
+            top: `3050px`,
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: '#8b6914',
+            color: '#ffffff',
+            border: '2px solid #5e4510',
+            borderRadius: '8px',
+            padding: '10px 16px',
+            fontFamily: '"Georgia", "Times New Roman", serif',
+            fontSize: '16px',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            cursor: 'pointer',
+          }}
+          onClick={() => { /* grading logic will go here */ }}
+        >
+          Click me when you've <br></br>completed all the tasks
+        </button>
         
         {/* Moveable dog - stays in world coordinates */}
         <img
