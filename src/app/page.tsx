@@ -27,6 +27,7 @@ type TextBox = {
   fontSize: number; // in pixels
   top: number;
   left: number;
+  additionalInfo?: string; // Optional additional info to display when clicked
 };
 
 // Deterministic seeded random function for consistent server/client rendering
@@ -298,7 +299,13 @@ const Tree = memo(function Tree({ x, y }: { x: number; y: number }) {
 });
 
 // TextBox component with sign panel
-const TextBoxComponent = memo(function TextBoxComponent({ textBox }: { textBox: TextBox }) {
+const TextBoxComponent = memo(function TextBoxComponent({ 
+  textBox, 
+  onClick 
+}: { 
+  textBox: TextBox;
+  onClick?: () => void;
+}) {
   // Split text by newlines
   const lines = textBox.text.split('\n');
   
@@ -326,6 +333,7 @@ const TextBoxComponent = memo(function TextBoxComponent({ textBox }: { textBox: 
     >
       {/* Sign panel - light brown wood color */}
       <div
+        onClick={onClick}
         style={{
           position: 'absolute',
           width: `${signWidth}px`,
@@ -341,6 +349,7 @@ const TextBoxComponent = memo(function TextBoxComponent({ textBox }: { textBox: 
           left: '0',
           top: '0',
           padding: `${signPadding / 2}px ${signPadding / 2}px`,
+          cursor: onClick ? 'pointer' : 'default',
         }}
       >
         {/* Text on sign - each line */}
@@ -381,26 +390,60 @@ const TextBoxComponent = memo(function TextBoxComponent({ textBox }: { textBox: 
 });
 
 export default function Home() {
-  const [worldPosition, setWorldPosition] = useState({ x: 590, y: 805 });
+  const [worldPosition, setWorldPosition] = useState({ x: 850, y: 850 });
   // Use consistent default for SSR and client to prevent hydration mismatch
   const [viewportCenter, setViewportCenter] = useState({ x: 400, y: 300 });
   const [allTrees, setAllTrees] = useState<{ x: number; y: number }[]>([]);
   
   const initialTreeBlocks: TreeBlock[] = [
-    { length: 400, width: 1000, density: 0.5, top: 900, left: 800},
+    { length: 400, width: 2400, density: 0.5, top: 900, left: 200},
+    { length: 400, width: 600, density: 0.5, top: 900, left: 2700},
+    { length: 400, width: 3000, density: 0.5, top: 2200, left: 800},
   ];
 
   const initialPaths: Path[] = [
-    { length: 1000, width: 50, top: 800, left: 550, angle: 0 },
-  ];
+    { length: 1000, width: 50, top: 850, left: 800, angle: 0 },
+    { length: 400, width: 50, top: 850, left: 1800, angle: -45 },
+    { length: 700, width: 50, top: 600, left: 2100, angle: 30 },
+    { length: 800, width: 50, top: 900, left: 2670, angle: 0 },
+    { length: 800, width: 50, top: 900, left: 3470, angle: 60 },
+    { length: 1100, width: 50, top: 900, left: 2800, angle: 90},
+    { length: 800, width: 50, top: 1600, left: 3870, angle: 150},
+    { length: 2300, width: 50, top: 2000, left: 950, angle: 0},
+  ]
 
   const initialTextBoxes: TextBox[] = [
-    { text: 'Welcome to the Picture Book Forest!\n Explore to learn more about how picture books make it\n out of the author\'s mind and into the world!', fontSize: 24, top: 600, left: 550 },
+    { text: 'Welcome to the Picture Book Forest!\n In order for you to escape the forest,\n you must complete all the tasks on the signs!', fontSize: 24, top: 600, left: 550 },
+    { text: 'Beans is your guide.\n Use the arrow keys \nto move around the world.', fontSize: 16, top: 750, left: 500, additionalInfo: 'Beans is a friendly dog and doesn\'t bite, don\'t worry! Rename Beans by entering a new name in the text box below!' },
+    { text: 'Excited to learn,\n go this way!\n→', fontSize: 24, top: 600, left: 1400 },
+    { text: 'The journey starts\n with Authors!\n Click here and write down\n an idea for a picture book!', fontSize: 18, top: 750, left: 2000, additionalInfo: 'Authors are the ones who create the words that we read. They are the ones who put their heart and soul into their words. They are the ones who make the words come to life. They are the ones who make the words come to life.'},
+    { text: 'Authours want everyone\n to read their words and\n feel understood. \nClick and write down\n a part of you you really like!.', fontSize: 18, top: 600, left: 2400, additionalInfo: 'Authors want everyone to read their words and feel understood. They achieve this by writing in a way that is easy to understand and engaging. They also use simple language and avoid using words that are too complex. They also use simple language and avoid using words that are too complex.'},
+    { text: 'Once an author has an idea\n and has done their first\n draft, they bring it to their agent!', fontSize: 18, top: 700, left: 2900},
+    { text: 'Already have an\n angent? Take a \nshortcut this way! ↓', fontSize: 18, top: 950, left: 2950},
+    { text: 'Find an Agent by\n clicking here!', fontSize: 18, top: 1450, left: 3500, additionalInfo: 'all the info about finding an agent'},
+    { text: 'Now that our agent\n has our draft, they will\n help us move it forwards!\n Click to move your\n book forwards!', fontSize: 18, top: 1700, left: 2950, additionalInfo: 'Info info info'},
+    { text: 'Nice, the book was\n liked by an editor!\n The publishing house said\n they will move forwards\n with it! Click and try\n editing like an editor!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'They found an\n illustrator for the book!\n Grab a piece of paper\n and draw a picture\n of your idea from above.', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'Your idea has been\n made into a real book!\n Click and to help the publishing house, \nread the section and answer\n a question.', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'The book need someone\n to promote it!\n Click to help with reviews!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'Edelweiss', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'Ingram', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'The book store is\n excited about your book\n and is ordering it!\n Click to write about\n the last time you were\n at a book store.', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'Libraries want everyone\n access your book!. A favorite\n is story time.\n Click and practice\n reading aloud!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'The book has made it\n to readers homes!\n Congrats your work\n is done!!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+    { text: 'You found the secret\n path: Awards!!\n Learn more about what \nyour book might win!', fontSize: 18, top: 2000, left: 2000, additionalInfo: 'Info info info'},
+
+
+
   ];
   
   const [paths, setPaths] = useState<Path[]>(initialPaths);
   const [treeBlocks, setTreeBlocks] = useState<TreeBlock[]>(initialTreeBlocks);
   const [textBoxes, setTextBoxes] = useState<TextBox[]>(initialTextBoxes);
+  const [facingRight, setFacingRight] = useState(true); // true = facing right, false = facing left
+  const [clickedTextBox, setClickedTextBox] = useState<{ index: number; info: string } | null>(null);
+  const [signResponses, setSignResponses] = useState<{ index: number; response: string; timestamp: number }[]>([]);
+  const [currentResponse, setCurrentResponse] = useState<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
   const keysPressed = useRef<Set<string>>(new Set());
   const animationFrameRef = useRef<number | undefined>(undefined);
@@ -452,14 +495,16 @@ export default function Home() {
     (window as any).addPath = addPath;
     (window as any).addTextBox = addTextBox;
     (window as any).clearAll = clearAll;
+    (window as any).getSignResponses = () => signResponses;
     
     return () => {
       delete (window as any).addTreeBlock;
       delete (window as any).addPath;
       delete (window as any).addTextBox;
       delete (window as any).clearAll;
+      delete (window as any).getSignResponses;
     };
-  }, [addTreeBlock, addPath, addTextBox, clearAll]);
+  }, [addTreeBlock, addPath, addTextBox, clearAll, signResponses]);
 
   const SPEED = 8; // pixels per frame
 
@@ -525,12 +570,19 @@ export default function Home() {
     };
   }, []);
 
-  // Track key presses
+  // Track key presses and direction
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         e.preventDefault();
         keysPressed.current.add(e.key);
+        
+        // Update direction when left/right keys are pressed
+        if (e.key === 'ArrowRight') {
+          setFacingRight(true);
+        } else if (e.key === 'ArrowLeft') {
+          setFacingRight(false);
+        }
       }
     };
 
@@ -581,21 +633,141 @@ export default function Home() {
         
         {/* Text boxes */}
         {textBoxes.map((textBox, index) => (
-          <TextBoxComponent key={`textbox-${index}`} textBox={textBox} />
+          <TextBoxComponent 
+            key={`textbox-${index}`} 
+            textBox={textBox}
+            onClick={textBox.additionalInfo ? () => setClickedTextBox({ index, info: textBox.additionalInfo || '' }) : undefined}
+          />
         ))}
         
-        {/* Moveable circle - stays in world coordinates */}
-        <div
-          className="absolute rounded-full bg-black z-10"
+        {/* Moveable dog - stays in world coordinates */}
+        <img
+          src="/dog.png"
+          alt="dog"
+          className="absolute z-10"
           style={{
-            width: '20px',
-            height: '20px',
+            width: '180px',
+            height: '120px',
             left: `${worldPosition.x}px`,
             top: `${worldPosition.y}px`,
-            transform: 'translate(-50%, -50%)',
+            transform: `translate(-50%, -50%) ${facingRight ? 'scaleX(-1)' : 'scaleX(1)'}`,
+            imageRendering: 'pixelated',
           }}
         />
       </div>
+      
+      {/* Modal overlay for displaying additional info and collecting response */}
+      {clickedTextBox && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            cursor: 'pointer',
+          }}
+          onClick={() => setClickedTextBox(null)}
+        >
+          <div
+            style={{
+              backgroundColor: '#d4a574',
+              border: '4px solid #8b6914',
+              borderRadius: '12px',
+              padding: '30px',
+              maxWidth: '600px',
+              maxHeight: '70vh',
+              overflowY: 'auto',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+              cursor: 'default',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                fontSize: '20px',
+                color: '#2c2416',
+                fontFamily: '"Georgia", "Times New Roman", serif',
+                lineHeight: '1.6',
+                whiteSpace: 'pre-line',
+                textAlign: 'left',
+              }}
+            >
+              {clickedTextBox.info}
+            </div>
+            <div style={{ marginTop: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '6px', color: '#2c2416', fontFamily: '"Georgia", "Times New Roman", serif' }}>
+                Your response:
+              </label>
+              <textarea
+                value={currentResponse}
+                onChange={(e) => setCurrentResponse(e.target.value)}
+                placeholder=""
+                style={{
+                  width: '100%',
+                  minHeight: '90px',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  border: '1px solid #8b6914',
+                  fontFamily: 'inherit',
+                  fontSize: '16px',
+                  resize: 'vertical',
+                }}
+              />
+              <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+                <button
+                  onClick={() => {
+                    if (!clickedTextBox) return;
+                    setSignResponses((prev) => [
+                      ...prev,
+                      { index: clickedTextBox.index, response: currentResponse.trim(), timestamp: Date.now() },
+                    ]);
+                    setCurrentResponse('');
+                    setClickedTextBox(null);
+                  }}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#8b6914',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontFamily: '"Georgia", "Times New Roman", serif',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentResponse('');
+                    setClickedTextBox(null);
+                  }}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#c7b299',
+                    color: '#2c2416',
+                    border: '1px solid #8b6914',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontFamily: '"Georgia", "Times New Roman", serif',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
