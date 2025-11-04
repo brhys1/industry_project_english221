@@ -1,0 +1,204 @@
+const initialTextBoxes: TextBox[] = [
+  {
+    text: 'Welcome to the Picture Book Forest!\nIn order for you to escape the forest,\nyou must complete all the tasks on the signs!',
+    fontSize: 24,
+    top: 600,
+    left: 550,
+  },
+  {
+    text: 'Beans is your guide.\nUse the arrow keys\nto move around the world.',
+    fontSize: 16,
+    top: 750,
+    left: 500,
+    additionalInfo:
+      'Beans is a friendly dog and will help you explore! You can even rename Beans in the box below to make your own helper.',
+  },
+  {
+    text: 'Excited to learn,\ngo this way!\n→',
+    fontSize: 24,
+    top: 600,
+    left: 1400,
+  },
+  {
+    text: 'The journey starts\nwith Authors!\nClick here and write down\nan idea for a picture book!',
+    fontSize: 18,
+    top: 750,
+    left: 2000,
+    additionalInfo:
+      'Picture books can just be fun. They don't always need to teach a lesson! Words don't have to explain everything, because pictures can do the talking too. Kids already understand big feelings like love, joy, and sadness. \n\nBelow, write a small idea for your own picture book! (Mac & Jon talk)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Great job! You've written a creative idea!" : "Please write down an idea for your picture book.";
+    },
+  },
+  {
+    text: 'Authors want everyone\nto read their words and\nfeel understood.\nClick and write down\na part of you you really like!',
+    fontSize: 18,
+    top: 600,
+    left: 2400,
+    additionalInfo:
+      'When writig picture books it is important that kids feel seen in the writing. Wether that is through actions, emotions, or demographics, we want various experiences across picture books. It is also important that what is being writen comes from what you as the author know, describing some aspect of what you experience in life. Trust kids—they understand emotions even when you don't spell them out. Write about something real and special to you. \n\nBelow, write your favorite thing about yourself! (Mac & Jon & Dr. Thomas talk)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Excellent! You've shared something special about yourself!" : "Please write down a part of you that you really like.";
+    },
+  },
+  {
+    text: 'Once an author has an idea\nand has done their first\ndraft, they bring it to their agent!',
+    fontSize: 18,
+    top: 700,
+    left: 2900,
+  },
+  {
+    text: 'Already have an\nagent? Take a\nshortcut this way! ↓',
+    fontSize: 18,
+    top: 950,
+    left: 2950,
+    additionalInfo:
+      'Below, enter your agent's information (name & email) to get started finding your publishing partner!',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Perfect! Your agent information has been recorded!" : "Please enter your agent's information (name & email).";
+    },
+  },
+  {
+    text: 'Find an Agent by\nclicking here!',
+    fontSize: 18,
+    top: 1450,
+    left: 3500,
+    additionalInfo:
+      'Agents know many people in the book world. They help connect authors and publishers, and they take care of contracts and rights. They usually earn about 15% of what the author makes. Agents choose carefully who to represent and often stay loyal to their writers.\n\nTo find an agent for yourself, write the first sentence of your picture book idea! (Galtt & Zacker talk)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Wonderful! You've written the first sentence of your picture book idea!" : "Please write the first sentence of your picture book idea.";
+    },
+  },
+  {
+    text: 'Now that our agent\nhas our draft, they will\nhelp us move it forwards!\nClick to move your\nbook forwards!',
+    fontSize: 18,
+    top: 1700,
+    left: 2950,
+    additionalInfo:
+      'Agents share your book with editors at publishing houses. They talk about money, contracts, and rights. Making a book can take 1–2 years, so everyone has to be patient and keep working together.\n\nType a motivational quote to keep your book going! (Galtt & Zacker talk)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Great motivational quote! Keep your book going!" : "Please type a motivational quote.";
+    },
+  },
+  {
+    text: 'Nice, the book was\nliked by an editor!\nThe publishing house said\nthey will move forwards\nwith it! Click and try\nediting like an editor!',
+    fontSize: 18,
+    top: 1700,
+    left: 2000,
+    additionalInfo:
+      'Editors help polish the story and make sure it fits the publisher's style. They care about clear writing and teamwork. Books can show everyday life—they don't have to always show pain.\n\nTry to improve this sentence while keeping it short like in picture books:\n"The man with the great big red hat loved eating ice cream on the beach." (Galtt & Zacker talk)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Nice editing! You've improved the sentence!" : "Please try improving the sentence.";
+    },
+  },
+  {
+    text: 'They found an\nillustrator for the book!\nType an emoji\nfor illustrations!',
+    fontSize: 18,
+    top: 2100,
+    left: 1100,
+    additionalInfo:
+      'The illustrator draws after reading the author's story. Illustrations can add new meaning or tell a different part of the story. Artists can use pencils, paint, or computers. Sometimes they talk with the author to trade ideas, but not always. Remember—pictures can say things words can't!\n\nType an emoji that shows what your book feels like! (Erin Stead talk)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Perfect! You've chosen a great emoji for your book!" : "Please type an emoji that shows what your book feels like.";
+    },
+  },
+  {
+    text: 'Sometimes the illustrators\ncommunicate with the author\nso we have a path for them\nto talk with them if they\nneed it! ↑',
+    fontSize: 18,
+    top: 1900,
+    left: 500,
+  },
+  {
+    text: 'Your idea has been\nmade into a real book!\nClick and to help the publishing house,\nread the section and answer\na question.',
+    fontSize: 18,
+    top: 3200,
+    left: 450,
+    additionalInfo:
+      'When a book is made, the author, illustrator, and publisher sign a contract. The publisher pays them and gives a bit of money for each book sold. Should the agent also get paid in the contract?\n\nWrite "Yes" or "No" below. (Galtt & Zacker talk)',
+    grading: (response: string) => {
+      const trimmed = response.trim().toLowerCase();
+      if (trimmed === 'no') {
+        return "Correct! The agent should not be involved in the contract.";
+      } else if (trimmed === 'yes') {
+        return "Actually, the agent should not be involved in the contract. The correct answer is 'No'.";
+      } else if (trimmed.length > 0) {
+        return "Good try! The correct answer is 'No' - the agent should not be involved in the contract.";
+      } else {
+        return "Please write 'Yes' or 'No' below.";
+      }
+    },
+  },
+  {
+    text: 'Edelweiss',
+    fontSize: 18,
+    top: 3300,
+    left: 1300,
+    additionalInfo:
+      'Edelweiss is a website where bookstores and clubs look at new books before they come out. They read reviews, place orders, and plan displays for their stores. (Literati visit)',
+  },
+  {
+    text: 'Ingram',
+    fontSize: 18,
+    top: 3000,
+    left: 1300,
+    additionalInfo:
+      'Ingram is a large company that ships books to stores and libraries. Most libraries order from Ingram before books come out so they can have them ready for readers. (AADL visit)',
+  },
+  {
+    text: 'The book needs someone\nto promote it!\nClick to help with reviews!',
+    fontSize: 18,
+    top: 3000,
+    left: 2000,
+    additionalInfo:
+      'Bookstores order books 6–12 months early! They read and write reviews to help families find great reads. They also work hard to support small or indie authors. (Literati visit)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Great work helping with reviews!" : "Please help with reviews.";
+    },
+  },
+  {
+    text: 'The book store is\nexcited about your book\nand is ordering it!\nClick to design a display\ntheme at a bookstore.',
+    fontSize: 18,
+    top: 3300,
+    left: 2600,
+    additionalInfo:
+      'Stores use sites like Edelweiss to choose books months ahead of time. They think hard about what to show on tables or in windows to make kids excited to read.\n\nGive the bookstore a fun theme for their next display! (Literati visit)',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Fantastic! You've created a fun display theme!" : "Please give the bookstore a fun theme for their next display.";
+    },
+  },
+  {
+    text: 'Libraries want everyone\nto access your book! A favorite\nis story time. Click and practice\nreading aloud!',
+    fontSize: 18,
+    top: 2950,
+    left: 2800,
+    additionalInfo:
+      'Libraries are for everyone and are paid for by local taxes. They order books about 3 months before they come out. Librarians love books with big pictures, repetition, and rhythm for read-aloud time. They use review magazines to help them choose.\n\nPretend you're at story time—read this part out loud, then type "Done"! (AADL visit)',
+    grading: (response: string) => {
+      const trimmed = response.trim().toLowerCase();
+      if (trimmed === 'done') {
+        return "Perfect! You've completed the story time reading!";
+      } else if (trimmed.length > 0) {
+        return "Great job reading! Don't forget to type 'Done' when you're finished.";
+      } else {
+        return "Please read the part out loud, then type 'Done'.";
+      }
+    },
+  },
+  {
+    text: 'The book has made it\nto readers\' homes!\nCongrats your work\nis done!!',
+    fontSize: 18,
+    top: 3500,
+    left: 3300,
+  },
+  {
+    text: 'You found the secret\npath: Awards!!\nLearn more about what\nyour book might win!',
+    fontSize: 18,
+    top: 4100,
+    left: 2300,
+    additionalInfo:
+      'The Caldecott Medal is a special award for the best illustrated picture book each year. It celebrates stories that mix art and words in powerful ways and honors both creativity and heart. It is a huge deal for books to win this as it cements the author in the industry and boosts book sales.\n\nWrite a smily face for finding this secret area!',
+    grading: (response: string) => {
+      return response.trim().length > 0 ? "Awesome! You found the secret area! 🎉" : "Please write a smiley face for finding this secret area.";
+    },
+  },
+];

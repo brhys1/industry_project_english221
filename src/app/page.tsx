@@ -28,6 +28,7 @@ type TextBox = {
   top: number;
   left: number;
   additionalInfo?: string; // Optional additional info to display when clicked
+  grading?: (response: string) => string; // Optional grading function that returns feedback
 };
 
 // Deterministic seeded random function for consistent server/client rendering
@@ -427,26 +428,208 @@ export default function Home() {
   ]
 
   const initialTextBoxes: TextBox[] = [
-    { text: 'Welcome to the Picture Book Forest!\n In order for you to escape the forest,\n you must complete all the tasks on the signs!', fontSize: 24, top: 600, left: 550 },
-    { text: 'Beans is your guide.\n Use the arrow keys \nto move around the world.', fontSize: 16, top: 750, left: 500, additionalInfo: 'Beans is a friendly dog and doesn\'t bite, don\'t worry! Rename Beans by entering a new name in the text box below!' },
-    { text: 'Excited to learn,\n go this way!\n→', fontSize: 24, top: 600, left: 1400 },
-    { text: 'The journey starts\n with Authors!\n Click here and write down\n an idea for a picture book!', fontSize: 18, top: 750, left: 2000, additionalInfo: 'Authors are the ones who create the words that we read. They are the ones who put their heart and soul into their words. They are the ones who make the words come to life. They are the ones who make the words come to life.'},
-    { text: 'Authours want everyone\n to read their words and\n feel understood. \nClick and write down\n a part of you you really like!.', fontSize: 18, top: 600, left: 2400, additionalInfo: 'Authors want everyone to read their words and feel understood. They achieve this by writing in a way that is easy to understand and engaging. They also use simple language and avoid using words that are too complex. They also use simple language and avoid using words that are too complex.'},
-    { text: 'Once an author has an idea\n and has done their first\n draft, they bring it to their agent!', fontSize: 18, top: 700, left: 2900},
-    { text: 'Already have an\n angent? Take a \nshortcut this way! ↓', fontSize: 18, top: 950, left: 2950},
-    { text: 'Find an Agent by\n clicking here!', fontSize: 18, top: 1450, left: 3500, additionalInfo: 'all the info about finding an agent'},
-    { text: 'Now that our agent\n has our draft, they will\n help us move it forwards!\n Click to move your\n book forwards!', fontSize: 18, top: 1700, left: 2950, additionalInfo: 'Info info info'},
-    { text: 'Nice, the book was\n liked by an editor!\n The publishing house said\n they will move forwards\n with it! Click and try\n editing like an editor!', fontSize: 18, top: 1700, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'They found an\n illustrator for the book!\n Type a cool emoji\n for illustrations!', fontSize: 18, top: 2100, left: 1100, additionalInfo: 'Info info info'},
-    { text: 'Sometimes the illustrators\n communicate with the author\n so we have a path for them\n to talk with them if they\n need it! ↑', fontSize: 18, top: 1900, left: 500},
-    { text: 'Your idea has been\n made into a real book!\n Click and to help the publishing house, \nread the section and answer\n a question.', fontSize: 18, top: 3200, left: 450, additionalInfo: 'Info info info'},
-    { text: 'Edelweiss', fontSize: 18, top: 3300, left: 1300, additionalInfo: 'Info info info'},
-    { text: 'Ingram', fontSize: 18, top: 3000, left: 1300, additionalInfo: 'Info info info'},
-    { text: 'The book need someone\n to promote it!\n Click to help with reviews!', fontSize: 18, top: 3000, left: 2000, additionalInfo: 'Info info info'},
-    { text: 'The book store is\n excited about your book\n and is ordering it!\n Click to write about\n the last time you were\n at a book store.', fontSize: 18, top: 3300, left: 2600, additionalInfo: 'Info info info'},
-    { text: 'Libraries want everyone\n access your book! A favorite\n is story time. Click and practice\n reading aloud!', fontSize: 18, top: 2950, left: 2800, additionalInfo: 'Info info info'},
-    { text: 'The book has made it\n to readers homes!\n Congrats your work\n is done!!', fontSize: 18, top: 3500, left: 3300},
-    { text: 'You found the secret\n path: Awards!!\n Learn more about what \nyour book might win!', fontSize: 18, top: 4100, left: 2300, additionalInfo: 'Info info info'},
+    {
+      text: 'Welcome to the Picture Book Forest!\nIn order for you to escape the forest,\nyou must complete all the tasks on the signs!',
+      fontSize: 24,
+      top: 600,
+      left: 550,
+    },
+    {
+      text: 'Beans is your guide.\nUse the arrow keys\nto move around the world.',
+      fontSize: 16,
+      top: 750,
+      left: 500,
+      additionalInfo:
+        'Beans is a friendly dog and will help you explore! You can even rename Beans in the box below to make your own helper.',
+    },
+    {
+      text: 'Excited to learn,\ngo this way!\n→',
+      fontSize: 24,
+      top: 600,
+      left: 1400,
+    },
+    {
+      text: 'The journey starts\nwith Authors!\nClick here and write down\nan idea for a picture book!',
+      fontSize: 18,
+      top: 750,
+      left: 2000,
+      additionalInfo:
+        'Picture books can just be fun. They don\'t always need to teach a lesson! Words don\'t have to explain everything, because pictures can do the talking too. Kids already understand big feelings like love, joy, and sadness. \n\nBelow, write a small idea for your own picture book! (Mac & Jon talk)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Great job! You've written a creative idea!" : "Please write down an idea for your picture book.";
+      },
+    },
+    {
+      text: 'Authors want everyone\nto read their words and\nfeel understood.\nClick and write down\na part of you you really like!',
+      fontSize: 18,
+      top: 600,
+      left: 2400,
+      additionalInfo:
+        'When writig picture books it is important that kids feel seen in the writing. Wether that is through actions, emotions, or demographics, we want various experiences across picture books. It is also important that what is being writen comes from what you as the author know, describing some aspect of what you experience in life. Trust kids—they understand emotions even when you don\'t spell them out. Write about something real and special to you. \n\nBelow, write your favorite thing about yourself! (Mac & Jon & Dr. Thomas talk)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Excellent! You've shared something special about yourself!" : "Please write down a part of you that you really like.";
+      },
+    },
+    {
+      text: 'Once an author has an idea\nand has done their first\ndraft, they bring it to their agent!',
+      fontSize: 18,
+      top: 700,
+      left: 2900,
+    },
+    {
+      text: 'Already have an\nagent? Take a\nshortcut this way! ↓',
+      fontSize: 18,
+      top: 950,
+      left: 2950,
+      additionalInfo:
+        'Below, enter your agent\'s information (name & email) to get started finding your publishing partner!',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Perfect! Your agent information has been recorded!" : "Please enter your agent's information (name & email).";
+      },
+    },
+    {
+      text: 'Find an Agent by\nclicking here!',
+      fontSize: 18,
+      top: 1450,
+      left: 3500,
+      additionalInfo:
+        'Agents know many people in the book world. They help connect authors and publishers, and they take care of contracts and rights. They usually earn about 15% of what the author makes. Agents choose carefully who to represent and often stay loyal to their writers.\n\nTo find an agent for yourself, write the first sentence of your picture book idea! (Galtt & Zacker talk)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Wonderful! You've written the first sentence of your picture book idea!" : "Please write the first sentence of your picture book idea.";
+      },
+    },
+    {
+      text: 'Now that our agent\nhas our draft, they will\nhelp us move it forwards!\nClick to move your\nbook forwards!',
+      fontSize: 18,
+      top: 1700,
+      left: 2950,
+      additionalInfo:
+        'Agents share your book with editors at publishing houses. They talk about money, contracts, and rights. Making a book can take 1–2 years, so everyone has to be patient and keep working together.\n\nType a motivational quote to keep your book going! (Galtt & Zacker talk)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Great motivational quote! Keep your book going!" : "Please type a motivational quote.";
+      },
+    },
+    {
+      text: 'Nice, the book was\nliked by an editor!\nThe publishing house said\nthey will move forwards\nwith it! Click and try\nediting like an editor!',
+      fontSize: 18,
+      top: 1700,
+      left: 2000,
+      additionalInfo:
+        'Editors help polish the story and make sure it fits the publisher\'s style. They care about clear writing and teamwork. Books can show everyday life—they don\'t have to always show pain.\n\nTry to improve this sentence while keeping it short like in picture books:\n"The man with the great big red hat loved eating ice cream on the beach." (Galtt & Zacker talk)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Nice editing! You've improved the sentence!" : "Please try improving the sentence.";
+      },
+    },
+    {
+      text: 'They found an\nillustrator for the book!\nType an emoji\nfor illustrations!',
+      fontSize: 18,
+      top: 2100,
+      left: 1100,
+      additionalInfo:
+        'The illustrator draws after reading the author\'s story. Illustrations can add new meaning or tell a different part of the story. Artists can use pencils, paint, or computers. Sometimes they talk with the author to trade ideas, but not always. Remember—pictures can say things words can\'t!\n\nType an emoji that shows what your book feels like! (Erin Stead talk)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Perfect! You've chosen a great emoji for your book!" : "Please type an emoji that shows what your book feels like.";
+      },
+    },
+    {
+      text: 'Sometimes the illustrators\ncommunicate with the author\nso we have a path for them\nto talk with them if they\nneed it! ↑',
+      fontSize: 18,
+      top: 1900,
+      left: 500,
+    },
+    {
+      text: 'Your idea has been\nmade into a real book!\nClick and to help the publishing house,\nread the section and answer\na question.',
+      fontSize: 18,
+      top: 3200,
+      left: 450,
+      additionalInfo:
+        'When a book is made, the author, illustrator, and publisher sign a contract. The publisher pays them and gives a bit of money for each book sold. Should the agent also get paid in the contract?\n\nWrite "Yes" or "No" below. (Galtt & Zacker talk)',
+      grading: (response: string) => {
+        const trimmed = response.trim().toLowerCase();
+        if (trimmed === 'no') {
+          return "Correct! The agent should not be involved in the contract.";
+        } else if (trimmed === 'yes') {
+          return "Actually, the agent should not be involved in the contract. The correct answer is 'No'.";
+        } else if (trimmed.length > 0) {
+          return "Good try! The correct answer is 'No' - the agent should not be involved in the contract.";
+        } else {
+          return "Please write 'Yes' or 'No' below.";
+        }
+      },
+    },
+    {
+      text: 'Edelweiss',
+      fontSize: 18,
+      top: 3300,
+      left: 1300,
+      additionalInfo:
+        'Edelweiss is a website where bookstores and clubs look at new books before they come out. They read reviews, place orders, and plan displays for their stores. (Literati visit)',
+    },
+    {
+      text: 'Ingram',
+      fontSize: 18,
+      top: 3000,
+      left: 1300,
+      additionalInfo:
+        'Ingram is a large company that ships books to stores and libraries. Most libraries order from Ingram before books come out so they can have them ready for readers. (AADL visit)',
+    },
+    {
+      text: 'The book needs someone\nto promote it!\nClick to help with reviews!',
+      fontSize: 18,
+      top: 3000,
+      left: 2000,
+      additionalInfo:
+        'Bookstores order books 6–12 months early! They read and write reviews to help families find great reads. They also work hard to support small or indie authors. (Literati visit)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Great work helping with reviews!" : "Please help with reviews.";
+      },
+    },
+    {
+      text: 'The book store is\nexcited about your book\nand is ordering it!\nClick to design a display\ntheme at a bookstore.',
+      fontSize: 18,
+      top: 3300,
+      left: 2600,
+      additionalInfo:
+        'Stores use sites like Edelweiss to choose books months ahead of time. They think hard about what to show on tables or in windows to make kids excited to read.\n\nGive the bookstore a fun theme for their next display! (Literati visit)',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Fantastic! You've created a fun display theme!" : "Please give the bookstore a fun theme for their next display.";
+      },
+    },
+    {
+      text: 'Libraries want everyone\nto access your book! A favorite\nis story time. Click and practice\nreading aloud!',
+      fontSize: 18,
+      top: 2950,
+      left: 2800,
+      additionalInfo:
+        'Libraries are for everyone and are paid for by local taxes. They order books about 3 months before they come out. Librarians love books with big pictures, repetition, and rhythm for read-aloud time. They use review magazines to help them choose.\n\nPretend you\'re at story time—read this part out loud, then type "Done"! (AADL visit)',
+      grading: (response: string) => {
+        const trimmed = response.trim().toLowerCase();
+        if (trimmed === 'done') {
+          return "Perfect! You've completed the story time reading!";
+        } else if (trimmed.length > 0) {
+          return "Great job reading! Don't forget to type 'Done' when you're finished.";
+        } else {
+          return "Please read the part out loud, then type 'Done'.";
+        }
+      },
+    },
+    {
+      text: 'The book has made it\nto readers\' homes!\nCongrats your work\nis done!!',
+      fontSize: 18,
+      top: 3300,
+      left: 3500,
+    },
+    {
+      text: 'You found the secret\npath: Awards!!\nLearn more about what\nyour book might win!',
+      fontSize: 18,
+      top: 4100,
+      left: 2300,
+      additionalInfo:
+        'The Caldecott Medal is a special award for the best illustrated picture book each year. It celebrates stories that mix art and words in powerful ways and honors both creativity and heart. It is a huge deal for books to win this as it cements the author in the industry and boosts book sales.\n\nWrite a smily face for finding this secret area!',
+      grading: (response: string) => {
+        return response.trim().length > 0 ? "Awesome! You found the secret area! 🎉" : "Please write a smiley face for finding this secret area.";
+      },
+    },
   ];
   
   const [paths, setPaths] = useState<Path[]>(initialPaths);
@@ -456,9 +639,27 @@ export default function Home() {
   const [clickedTextBox, setClickedTextBox] = useState<{ index: number; info: string } | null>(null);
   const [signResponses, setSignResponses] = useState<{ index: number; response: string; timestamp: number }[]>([]);
   const [currentResponse, setCurrentResponse] = useState<string>("");
+  const [completionFeedback, setCompletionFeedback] = useState<{ show: boolean; message: string }>({ show: false, message: '' });
+  const [elapsedTime, setElapsedTime] = useState<number>(0); // elapsed time in seconds
   const containerRef = useRef<HTMLDivElement>(null);
   const keysPressed = useRef<Set<string>>(new Set());
   const animationFrameRef = useRef<number | undefined>(undefined);
+
+  // Timer effect - starts when component mounts
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      setElapsedTime((prev) => prev + 1);
+    }, 1000); // Update every second
+
+    return () => clearInterval(timerInterval);
+  }, []);
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Regenerate trees when treeBlocks or paths change
   useEffect(() => {
@@ -623,6 +824,32 @@ export default function Home() {
       className="w-full h-screen bg-pink-400 relative overflow-hidden"
       style={{ backgroundColor: '#99ff99' }}
     >
+      {/* Timer display in top left */}
+      <div
+        style={{
+          position: 'fixed',
+          top: '20px',
+          left: '20px',
+          zIndex: 100,
+          backgroundColor: '#d4a574',
+          border: '3px solid #8b6914',
+          borderRadius: '8px',
+          padding: '12px 20px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+        }}
+      >
+        <div
+          style={{
+            fontSize: '24px',
+            color: '#2c2416',
+            fontFamily: '"Georgia", "Times New Roman", serif',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}
+        >
+          {formatTime(elapsedTime)}
+        </div>
+      </div>
       {/* World container that moves as you explore */}
       <div
         className="absolute"
@@ -669,7 +896,41 @@ export default function Home() {
             boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
             cursor: 'pointer',
           }}
-          onClick={() => { /* grading logic will go here */ }}
+          onClick={() => {
+            // Find all text boxes that have grading functions
+            const textBoxesWithGrading = textBoxes
+              .map((tb, idx) => ({ textBox: tb, index: idx }))
+              .filter(({ textBox }) => textBox.grading);
+
+            // Check if all required responses have been submitted
+            const missingResponses: number[] = [];
+            const gradingResults: { index: number; feedback: string }[] = [];
+
+            textBoxesWithGrading.forEach(({ textBox, index }) => {
+              const response = signResponses.find(r => r.index === index);
+              if (!response || !response.response.trim()) {
+                missingResponses.push(index);
+              } else if (textBox.grading) {
+                const feedback = textBox.grading(response.response);
+                gradingResults.push({ index, feedback });
+              }
+            });
+
+            if (missingResponses.length > 0) {
+              const missingCount = missingResponses.length;
+              setCompletionFeedback({
+                show: true,
+                message: `You still need to complete ${missingCount} task${missingCount > 1 ? 's' : ''}. Please go back and complete all the tasks on the signs!`
+              });
+            } else {
+              // All tasks completed - show success message with time
+              const timeString = formatTime(elapsedTime);
+              setCompletionFeedback({
+                show: true,
+                message: `Congratulations! You've completed all the tasks! You've successfully escaped the Picture Book Forest! 🎉\n\nYour time: ${timeString}`
+              });
+            }
+          }}
         >
           Click me when you've <br></br>completed all the tasks
         </button>
@@ -799,6 +1060,70 @@ export default function Home() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Completion feedback modal */}
+      {completionFeedback.show && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            cursor: 'pointer',
+          }}
+          onClick={() => setCompletionFeedback({ show: false, message: '' })}
+        >
+          <div
+            style={{
+              backgroundColor: '#d4a574',
+              border: '4px solid #8b6914',
+              borderRadius: '12px',
+              padding: '30px',
+              maxWidth: '600px',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+              cursor: 'default',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                fontSize: '20px',
+                color: '#2c2416',
+                fontFamily: '"Georgia", "Times New Roman", serif',
+                lineHeight: '1.6',
+                whiteSpace: 'pre-line',
+                textAlign: 'center',
+                marginBottom: '20px',
+              }}
+            >
+              {completionFeedback.message}
+            </div>
+            <button
+              onClick={() => setCompletionFeedback({ show: false, message: '' })}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#8b6914',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontFamily: '"Georgia", "Times New Roman", serif',
+                fontWeight: 'bold',
+                width: '100%',
+              }}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}
